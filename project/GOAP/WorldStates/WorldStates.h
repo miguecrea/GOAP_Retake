@@ -203,7 +203,7 @@ public:
 	explicit NextToMedKit(bool predicate)
 		: BaseWorldState(predicate)
 	{
-		m_Name = "NextToFood";
+		m_Name = "NextToMedKit";
 	}
 
 	void Update(float elapsedSec, IExamInterface* iFace) override;
@@ -220,6 +220,19 @@ public:
 
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
+
+class NextToFood : public BaseWorldState {
+public:
+	explicit NextToFood(bool predicate)
+		: BaseWorldState(predicate)
+	{
+		m_Name = "NextToFood";
+	}
+
+	void Update(float elapsedSec, IExamInterface* iFace) override;
+};
+
+
 
 
 class RecentlyBittenState : public BaseWorldState

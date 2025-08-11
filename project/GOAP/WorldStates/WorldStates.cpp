@@ -281,3 +281,35 @@ void SafeFromEnemy::Update(float elapsedSec, IExamInterface* iFace)
 			return (e.Location - agentPos).Magnitude() > attackRange;
 		});
 }
+
+void NextToFood::Update(float elapsedSec, IExamInterface* iFace)
+{
+	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
+
+	m_Predicate = false;
+	for (const auto& info : itemInfo)
+	{
+		if (info.Type == eItemType::FOOD)
+		{
+			if ((info.Location - iFace->Agent_GetInfo().Position).Magnitude() < iFace->Agent_GetInfo().GrabRange)
+			{
+				m_Predicate = true;
+				break;
+			}
+		}
+
+	}
+}
+
+void KnowsFoodLocation::Update(float elapsedSec, IExamInterface* iFace)
+{
+
+}
+
+void KnowsMedKitLocation::Update(float elapsedSec, IExamInterface* iFace)
+{
+}
+
+void KnowsWeaponLocation::Update(float elapsedSec, IExamInterface* iFace)
+{
+}

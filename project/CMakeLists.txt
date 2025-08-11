@@ -11,7 +11,7 @@ add_library(Exam_Plugin SHARED
     "stdafx.cpp"
     "SurvivalAgentPlugin.cpp"
     ${GRAPH_SOURCES}
-    ${GOAP_SOURCES} "GOAP/Actions/BaseAction.h" "GOAP/Actions/BaseAction.cpp" "GOAP/WorldStates/BaseWorldState.h" "GOAP/WorldStates/BaseWorldState.cpp" "GOAP/Actions/Actions.h" "GOAP/Actions/Actions.cpp" "GOAP/WorldStates/WorldStates.h" "GOAP/WorldStates/WorldStates.cpp" "GOAP/Planner/Planner.h" "GOAP/Planner/Planner.cpp")
+    ${GOAP_SOURCES} "GOAP/Actions/BaseAction.h" "GOAP/Actions/BaseAction.cpp" "GOAP/WorldStates/BaseWorldState.h" "GOAP/WorldStates/BaseWorldState.cpp" "GOAP/Actions/Actions.h" "GOAP/Actions/Actions.cpp" "GOAP/WorldStates/WorldStates.h" "GOAP/WorldStates/WorldStates.cpp" "GOAP/Planner/Planner.h" "GOAP/Planner/Planner.cpp" "GOAP/Memory/Memory.h" "GOAP/Memory/Memory.cpp")
 
 target_link_libraries(Exam_Plugin PUBLIC ${EXAM_LIB_DEBUG})
 target_include_directories(Exam_Plugin PUBLIC ${EXAM_INCLUDE_DIR})
