@@ -12,3 +12,13 @@ public:
 private:
 	int m_MaxEnergy = 10;
 };
+
+class EvadeEnemy final : public BaseAction
+{
+public:
+
+	EvadeEnemy();
+	bool Execute(float elapsedSec, SteeringPlugin_Output& steeringOutput, IExamInterface* iFace) override;
+
+private:
+};

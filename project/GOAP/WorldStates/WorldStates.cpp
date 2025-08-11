@@ -145,7 +145,7 @@ void IsInHouseState::Update(float elapsedSec, IExamInterface* iFace)
 
 
 
-void NextToFood::Update(float elapsedSec, IExamInterface* iFace)
+void NextToMedKit::Update(float elapsedSec, IExamInterface* iFace)
 {
 
 	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
@@ -188,7 +188,6 @@ void NextToWeapon::Update(float elapsedSec, IExamInterface* iFace)
 
 void ZombieInViewState::Update(float elapsedSec, IExamInterface* iFace)
 {
-
 	m_Predicate = iFace->FOV_GetStats().NumEnemies > 0;
 }
 
@@ -208,4 +207,77 @@ void RecentlyBittenState::Update(float elapsedSec, IExamInterface* iFace)
 	{
 		m_Predicate = false;
 	}
+}
+
+void IsInventoryFull::Update(float elapsedSec, IExamInterface* iFace)
+{
+	m_Predicate = true;
+	ItemInfo item;
+	for (UINT i = 0; i < iFace->Inventory_GetCapacity(); ++i)
+	{
+		if (!iFace->Inventory_GetItem(i, item))
+		{
+			m_Predicate = false;
+			break;
+		}
+	}
+}
+
+void IsLowOnAmmo::Update(float elapsedSec, IExamInterface* iFace)
+{
+	m_Predicate = false;
+	ItemInfo item;
+	for (UINT i = 0; i < iFace->Inventory_GetCapacity(); ++i)
+	{
+		if (iFace->Inventory_GetItem(i, item) &&
+			(item.Type == eItemType::PISTOL || item.Type == eItemType::SHOTGUN) &&
+			item.Value < m_AmmoThreshold) 
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
+
+}
+
+
+//any of the enemies in the FOV is close 
+
+void IsNearEnemy::Update(float elapsedSec, IExamInterface* iFace)
+{
+	auto enemies = iFace->GetEnemiesInFOV();
+	Elite::Vector2 agentPos = iFace->Agent_GetInfo().Position;
+	float attackRange = iFace->Agent_GetInfo().GrabRange; // Close range
+
+	m_Predicate = std::any_of(enemies.begin(), enemies.end(),[&](const EnemyInfo & e)
+		{
+			return (e.Location - agentPos).Magnitude() < attackRange;
+		});
+}
+
+void HasOpenInventorySlot::Update(float elapsedSec, IExamInterface* iFace)
+{
+	ItemInfo item;
+	m_Predicate = false;
+	for (UINT i = 0; i < iFace->Inventory_GetCapacity(); ++i)
+	{
+		if (!iFace->Inventory_GetItem(i, item))
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
+}
+
+void SafeFromEnemy::Update(float elapsedSec, IExamInterface* iFace)
+{
+	auto enemies = iFace->GetEnemiesInFOV();
+
+	Elite::Vector2 agentPos = iFace->Agent_GetInfo().Position;
+	float attackRange = iFace->Agent_GetInfo().GrabRange; 
+
+	m_Predicate = std::all_of(enemies.begin(), enemies.end(), [&](const EnemyInfo& e)
+		{
+			return (e.Location - agentPos).Magnitude() > attackRange;
+		});
 }

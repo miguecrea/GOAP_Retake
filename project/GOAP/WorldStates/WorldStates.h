@@ -2,14 +2,15 @@
 
 #include"BaseWorldState.h"
 
-class HasSavedUpFood : public BaseWorldState {
+class HasSavedUpFood : public BaseWorldState 
+{
 public:
 	explicit HasSavedUpFood(bool predicate)
 		: BaseWorldState(predicate)
 	{
 		m_Name = "HasSavedUpFood";
 	}
-	void Update(float elapsedSec, IExamInterface* iFace) override;
+	void Update(float elapsedSec, IExamInterface * iFace) override;
 
 };
 
@@ -25,7 +26,8 @@ public:
 
 };
 
-class IsLoadedWithMedKits : public BaseWorldState {
+class IsLoadedWithMedKits : public BaseWorldState 
+{
 public:
 	explicit IsLoadedWithMedKits(bool predicate)
 		: BaseWorldState(predicate)
@@ -79,6 +81,18 @@ public:
 
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
+
+class SafeFromEnemy : public BaseWorldState {
+public:
+	explicit SafeFromEnemy(bool predicate)
+		: BaseWorldState(predicate)
+	{
+		m_Name = "SafeFromEnemy";
+	}
+
+	void Update(float elapsedSec, IExamInterface* iFace) override;
+};
+
 
 
 class HouseInViewState : public BaseWorldState {
@@ -184,9 +198,9 @@ public:
 
 
 
-class NextToFood : public BaseWorldState {
+class NextToMedKit : public BaseWorldState {
 public:
-	explicit NextToFood(bool predicate)
+	explicit NextToMedKit(bool predicate)
 		: BaseWorldState(predicate)
 	{
 		m_Name = "NextToFood";
@@ -225,10 +239,56 @@ private:
 };
 
 
+class IsInventoryFull : public BaseWorldState
+{
+public:
+	explicit IsInventoryFull(bool predicate)
+		: BaseWorldState(predicate)
+	{
+		m_Name = "IsInventoryFull";
+	}
+
+	void Update(float elapsedSec, IExamInterface* iFace) override;
+
+private:
+	float m_DefaultGracePeriod = 2.f;
+	float m_GracePeriod = 0.f;
+};
 
 
+class IsLowOnAmmo : public BaseWorldState
+{
+public:
+	explicit IsLowOnAmmo(bool predicate)
+		: BaseWorldState(predicate)
+	{
+		m_Name = "LowOnAmmo";
+	}
 
-class ZombieInViewState : public BaseWorldState {
+	void Update(float elapsedSec, IExamInterface* iFace) override;
+
+private:
+
+	int m_AmmoThreshold = 6;
+};
+
+class IsNearEnemy : public BaseWorldState
+{
+public:
+	explicit IsNearEnemy(bool predicate)
+		: BaseWorldState(predicate)
+	{
+		m_Name = "IsNearEnemy";
+	}
+
+	void Update(float elapsedSec, IExamInterface* iFace) override;
+
+private:
+
+};
+
+class ZombieInViewState : public BaseWorldState 
+{
 public:
 	explicit ZombieInViewState(bool predicate)
 		: BaseWorldState(predicate)
@@ -238,5 +298,19 @@ public:
 
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
+
+class HasOpenInventorySlot : public BaseWorldState
+{
+public:
+	explicit HasOpenInventorySlot(bool predicate)
+		: BaseWorldState(predicate)
+	{
+		m_Name = "HasOpenInventorySlot";
+	}
+
+	void Update(float elapsedSec, IExamInterface* iFace) override;
+};
+
+
 
 
