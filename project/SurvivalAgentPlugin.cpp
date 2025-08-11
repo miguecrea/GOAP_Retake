@@ -122,7 +122,6 @@ SteeringPlugin_Output SurvivalAgentPlugin::UpdateSteering(float dt)
 {
 	auto steering = SteeringPlugin_Output();
 
-	
 
 	return steering;
 }
