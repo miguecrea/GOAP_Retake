@@ -4,40 +4,6 @@
 #include <IExamInterface.h>
 #include"../Memory/Memory.h"
 
-void HasSavedUpFood::Update(float elapsedSec, IExamInterface * iFace)
-{
-	int currentMedKitCount{ 0 };
-	ItemInfo currentItem{};
-
-	m_Predicate = false;
-
-	for (UINT i = 0; i < iFace->Inventory_GetCapacity(); i++)
-	{
-		if (iFace->Inventory_GetItem(i, currentItem) && currentItem.Type == eItemType::FOOD)
-		{
-			m_Predicate = true;
-			return;
-		}
-	}
-}
-
-
-void HasSavedUpMedKits::Update(float elapsedSec, IExamInterface* iFace)
-{
-	int currentMedKitCount{ 0 };
-	ItemInfo currentItem{};
-
-	m_Predicate = false;
-
-	for (UINT i = 0; i < iFace->Inventory_GetCapacity(); i++)
-	{
-		if (iFace->Inventory_GetItem(i, currentItem) && currentItem.Type == eItemType::MEDKIT)
-		{
-			m_Predicate = true;
-			return;
-		}
-	}
-}
 
 
 
@@ -64,13 +30,13 @@ void IsLoadedWithMedKits::Update(float elapsedSec, IExamInterface* iFace)
 }
 
 
-/////////////
 void HasSavedWeaponsWithAcceptableAmmo::Update(float elapsedSec, IExamInterface* iFace)
 {
 
 	ItemInfo item;
 	int numOfAcceptableWeapons = 0;
 	m_Predicate = false;
+
 	for (size_t i = 0; i < iFace->Inventory_GetCapacity(); i++)
 	{
 		if (iFace->Inventory_GetItem(i, item) &&
@@ -141,8 +107,6 @@ void IsInHouseState::Update(float elapsedSec, IExamInterface* iFace)
 {
 	m_Predicate = iFace->Agent_GetInfo().IsInHouse;
 }
-
-
 
 
 void NextToMedKit::Update(float elapsedSec, IExamInterface * iFace)
@@ -240,9 +204,6 @@ void IsLowOnAmmo::Update(float elapsedSec, IExamInterface* iFace)
 
 }
 
-
-//any of the enemies in the FOV is close 
-
 void IsNearEnemy::Update(float elapsedSec, IExamInterface* iFace)
 {
 	auto enemies = iFace->GetEnemiesInFOV();
@@ -281,8 +242,9 @@ void SafeFromEnemy::Update(float elapsedSec, IExamInterface* iFace)
 			return (e.Location - agentPos).Magnitude() > attackRange;
 		});
 }
-
 void NextToFood::Update(float elapsedSec, IExamInterface* iFace)
+
+
 {
 	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
 
@@ -334,6 +296,7 @@ void KnowsMedKitLocation::Update(float elapsedSec, IExamInterface* iFace)
 		}
 	}
 }
+
 
 void KnowsWeaponLocation::Update(float elapsedSec, IExamInterface* iFace)
 {
@@ -402,5 +365,41 @@ void HasSavedUpItem::Update(float elapsedSec, IExamInterface* iFace)
 			m_Predicate = true;
 			return;
 		}
+	}
+}
+
+void KnowsItemLocation::Update(float elapsedSec, IExamInterface * iFace)
+{
+	m_Predicate = false;
+
+	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
+
+	for (size_t i = 0; i < itemInfo.size(); i++)
+	{
+		if (itemInfo[i].Type == m_Item)
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
+}
+
+void NextToItem::Update(float elapsedSec, IExamInterface* iFace)
+{
+
+	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
+
+	m_Predicate = false;
+	for (const auto& info : itemInfo)
+	{
+		if (info.Type == m_Item)
+		{
+			if ((info.Location - iFace->Agent_GetInfo().Position).Magnitude() < iFace->Agent_GetInfo().GrabRange)
+			{
+				m_Predicate = true;
+				break;
+			}
+		}
+
 	}
 }

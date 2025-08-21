@@ -6,19 +6,19 @@
 class HasSavedUpItem : public BaseWorldState
 {
 public:
-	
-	explicit HasSavedUpItem(bool predicate, const eItemType & ItemType)
+
+	explicit HasSavedUpItem(bool predicate, const eItemType& ItemType)
 		: BaseWorldState(predicate), m_ItemType(ItemType)
 	{
 
 		switch (m_ItemType)
 		{
 		case eItemType::FOOD:
-		m_Name = "HasSavedUpFood";
+			m_Name = "HasSavedUpFood";
 			break;
 		case eItemType::MEDKIT:
 
-		m_Name = "HasSavedUpMedKits";
+			m_Name = "HasSavedUpMedKits";
 			break;
 		default:
 			break;
@@ -168,82 +168,76 @@ public:
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
 
-class KnowsFoodLocation : public BaseWorldState
+class KnowsItemLocation : public BaseWorldState
 {
 public:
-	explicit KnowsFoodLocation(bool predicate)
-		: BaseWorldState(predicate)
+	explicit KnowsItemLocation(bool predicate, const eItemType& ItemType)
+		: BaseWorldState(predicate), m_Item{ ItemType }
 	{
-		m_Name = "KnowsFoodLocation";
+		switch (m_Item)
+		{
+		case eItemType::FOOD:
+
+			m_Name = "KnowsFoodLocation";
+
+			break;
+
+		case eItemType::MEDKIT:
+
+			m_Name = "KnowsMedKitLocation";
+
+			break;
+
+		case eItemType::PISTOL:
+		case eItemType::SHOTGUN:
+
+			m_Name = "KnowsWeaponLocation";
+			break;
+		default:
+			break;
+		}
 	}
+
+	eItemType m_Item;
 
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
 
-
-class KnowsMedKitLocation : public BaseWorldState {
-public:
-	explicit KnowsMedKitLocation(bool predicate)
-		: BaseWorldState(predicate)
-	{
-		m_Name = "KnowsMedKitLocation";
-	}
-
-	void Update(float elapsedSec, IExamInterface* iFace) override;
-};
-
-
-class KnowsWeaponLocation : public BaseWorldState {
-public:
-	explicit KnowsWeaponLocation(bool predicate)
-		: BaseWorldState(predicate)
-	{
-		m_Name = "KnowsWeaponLocation";
-	}
-
-	void Update(float elapsedSec, IExamInterface* iFace) override;
-};
-
-
-
-class NextToMedKit : public BaseWorldState {
-public:
-	explicit NextToMedKit(bool predicate)
-		: BaseWorldState(predicate)
-	{
-		m_Name = "NextToMedKit";
-	}
-
-	void Update(float elapsedSec, IExamInterface* iFace) override;
-};
-
-
-class NextToWeapon : public BaseWorldState 
+class NextToItem : public BaseWorldState
 {
 public:
-	explicit NextToWeapon(bool predicate)
-		: BaseWorldState(predicate)
+	explicit NextToItem(bool predicate, const eItemType& ItemType)
+		: BaseWorldState(predicate), m_Item{ ItemType }
 	{
-		m_Name = "NextToWeapon";
+		switch (m_Item)
+		{
+		case eItemType::FOOD:
+
+			m_Name = "NextToFood";
+
+			break;
+
+		case eItemType::MEDKIT:
+
+			m_Name = "NextToMedKit";
+			break;
+
+		case eItemType::PISTOL:
+		case eItemType::SHOTGUN:
+
+			m_Name = "NextToWeapon";
+			break;
+		default:
+			break;
+		}
 	}
+
+
+	eItemType m_Item;
+
 
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
-
-class NextToFood : public BaseWorldState 
-{
-public:
-	explicit NextToFood(bool predicate)
-		: BaseWorldState(predicate)
-	{
-		m_Name = "NextToFood";
-	}
-
-	void Update(float elapsedSec, IExamInterface* iFace) override;
-};
-
-
-
 
 class RecentlyBittenState : public BaseWorldState
 {
@@ -310,7 +304,7 @@ private:
 
 };
 
-class ZombieInViewState : public BaseWorldState 
+class ZombieInViewState : public BaseWorldState
 {
 public:
 	explicit ZombieInViewState(bool predicate)
