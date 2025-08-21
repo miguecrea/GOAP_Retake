@@ -63,11 +63,13 @@ bool EvadeEnemy::Execute(float elapsedSec, SteeringPlugin_Output & steeringOutpu
 	
 	if (!iFace) return false;
 
-	const float grabRange = 10.0f; // Distance at which enemy can grab
-	const float fleeSpeed = 5.0f;  // Movement speed while fleeing
+	const float grabRange = iFace->Agent_GetInfo().GrabRange; 
+	const float fleeSpeed = 5.0f;
 
 	// Find closest enemy
 	EnemyInfo closestEnemy{};
+
+
 	bool enemyFound = false;
 	float closestDistSq = FLT_MAX;
 
@@ -90,14 +92,12 @@ bool EvadeEnemy::Execute(float elapsedSec, SteeringPlugin_Output & steeringOutpu
 		return true;
 	}
 
-	// If already outside grab range, stop fleeing
 	if (closestDistSq > grabRange * grabRange)
 	{
 		steeringOutput.LinearVelocity = { 0.f, 0.f };
 		return true;
 	}
 
-	// Calculate flee direction
 	Elite::Vector2 agentPos = iFace->Agent_GetInfo().Position;
 	Elite::Vector2 enemyPos = closestEnemy.Location;
 	Elite::Vector2 fleeDir = agentPos - enemyPos;
@@ -114,7 +114,7 @@ bool EvadeEnemy::Execute(float elapsedSec, SteeringPlugin_Output & steeringOutpu
 
 	steeringOutput.AngularVelocity = 0.f;
 	steeringOutput.AutoOrient = true;
-	steeringOutput.RunMode = true; // Sprint if possible
+	steeringOutput.RunMode = true;
 
 	return true;
 }
@@ -129,38 +129,26 @@ GoToNearestSeenItem::GoToNearestSeenItem(const eItemType & Item):
 	{
 	case eItemType::PISTOL:
 	case eItemType::SHOTGUN:
-
-
 		AddPrecondition(std::make_unique<KnowsWeaponLocation>(true));
 		AddEffect(std::make_unique<NextToWeapon>(true));
-
 		break;
 	case eItemType::MEDKIT:
-
 		AddPrecondition(std::make_unique<KnowsMedKitLocation>(true));
 		AddEffect(std::make_unique<NextToMedKit>(true));
-
 		break;
 	case eItemType::FOOD:
 
 		AddPrecondition(std::make_unique<KnowsFoodLocation>(true));
 		AddEffect(std::make_unique<NextToFood>(true));
-
 		break;
-	
 	default:
 		break;
 
 	}
-
-
-
-
 }
 
 bool GoToNearestSeenItem::Execute(float elapsedSec, SteeringPlugin_Output& steeringOutput, IExamInterface* iFace)
 {
-	
 	std::vector<ItemInfo> seenItems = WorldMemory::Instance()->ItemsList();
 	std::vector<PurgeZoneInfo> seenPurges = WorldMemory::Instance()->AllPurgeZones();
 

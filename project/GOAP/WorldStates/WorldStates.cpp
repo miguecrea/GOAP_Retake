@@ -2,9 +2,9 @@
 #include"WorldStates.h" 
 #include "../../stdafx.h"
 #include <IExamInterface.h>
+#include"../Memory/Memory.h"
 
-
-void HasSavedUpFood::Update(float elapsedSec, IExamInterface* iFace)
+void HasSavedUpFood::Update(float elapsedSec, IExamInterface * iFace)
 {
 	int currentMedKitCount{ 0 };
 	ItemInfo currentItem{};
@@ -89,7 +89,7 @@ void HasSavedWeaponsWithAcceptableAmmo::Update(float elapsedSec, IExamInterface*
 }
 
 
-void HasWeaponState::Update(float elapsedSec, IExamInterface* iFace)
+void HasWeaponState::Update(float elapsedSec, IExamInterface * iFace)
 {
 
 	ItemInfo item;
@@ -145,7 +145,7 @@ void IsInHouseState::Update(float elapsedSec, IExamInterface* iFace)
 
 
 
-void NextToMedKit::Update(float elapsedSec, IExamInterface* iFace)
+void NextToMedKit::Update(float elapsedSec, IExamInterface * iFace)
 {
 
 	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
@@ -304,12 +304,103 @@ void NextToFood::Update(float elapsedSec, IExamInterface* iFace)
 void KnowsFoodLocation::Update(float elapsedSec, IExamInterface* iFace)
 {
 
+	m_Predicate = false;
+
+	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
+
+	for (size_t i = 0; i < itemInfo.size(); i++)
+	{
+		if (itemInfo[i].Type == eItemType::FOOD)
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
 }
 
 void KnowsMedKitLocation::Update(float elapsedSec, IExamInterface* iFace)
 {
+	m_Predicate = false;
+
+	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
+
+
+	for (size_t i = 0; i < itemInfo.size(); i++)
+	{
+		if (itemInfo[i].Type == eItemType::MEDKIT)
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
 }
 
 void KnowsWeaponLocation::Update(float elapsedSec, IExamInterface* iFace)
 {
+
+	m_Predicate = false;
+
+	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
+
+
+	for (size_t i = 0; i < itemInfo.size(); i++)
+	{
+		if (itemInfo[i].Type == eItemType::PISTOL || itemInfo[i].Type == eItemType::SHOTGUN )
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
+}
+
+void IsInPurgeZoneState::Update(float elapsedSec, IExamInterface* iFace)
+{
+
+	m_Predicate = false;
+
+	std::vector<PurgeZoneInfo> purgeZonesInfo = iFace->GetPurgeZonesInFOV();
+	for (const auto& purgeZone : purgeZonesInfo)
+	{
+		WorldMemory::Instance()->RegisterPurgeZone(purgeZone);
+	}
+
+	auto agentInfo = iFace->Agent_GetInfo();
+
+	purgeZonesInfo = WorldMemory::Instance()->AllPurgeZones();
+
+	for (auto& seenPurge : purgeZonesInfo)
+	{
+		if ((agentInfo.Position - seenPurge.Center).Magnitude() < seenPurge.Radius + 5)
+		{
+			m_Predicate = true;  //
+		}
+	}
+}
+
+void HouseInViewState::Update(float elapsedSec, IExamInterface* iFace)
+{
+	m_Predicate = iFace->Agent_GetInfo().IsInHouse;
+}
+
+void HasVisitedAllSeenHouses::Update(float elapsedSec, IExamInterface* iFace)
+{
+	m_Predicate = WorldMemory::Instance()->UnvisitedHouseCount() == 0; //returns true if there are houses left to visit
+
+}
+
+void HasSavedUpItem::Update(float elapsedSec, IExamInterface* iFace)
+{
+
+	ItemInfo currentItem{};
+
+	m_Predicate = false;
+
+	for (UINT i = 0; i < iFace->Inventory_GetCapacity(); i++)
+	{
+		if (iFace->Inventory_GetItem(i, currentItem) && currentItem.Type == m_ItemType)
+		{
+			m_Predicate = true;
+			return;
+		}
+	}
 }

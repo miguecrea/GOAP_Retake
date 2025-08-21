@@ -2,31 +2,38 @@
 
 #include"BaseWorldState.h"
 
-class HasSavedUpFood : public BaseWorldState 
+
+class HasSavedUpItem : public BaseWorldState
 {
 public:
-	explicit HasSavedUpFood(bool predicate)
-		: BaseWorldState(predicate)
+	
+	explicit HasSavedUpItem(bool predicate, const eItemType & ItemType)
+		: BaseWorldState(predicate), m_ItemType(ItemType)
 	{
+
+		switch (m_ItemType)
+		{
+		case eItemType::FOOD:
 		m_Name = "HasSavedUpFood";
-	}
-	void Update(float elapsedSec, IExamInterface * iFace) override;
+			break;
+		case eItemType::MEDKIT:
 
-};
-
-class HasSavedUpMedKits : public BaseWorldState {
-public:
-	explicit HasSavedUpMedKits(bool predicate)
-		: BaseWorldState(predicate)
-	{
 		m_Name = "HasSavedUpMedKits";
+			break;
+		default:
+			break;
+
+		}
 	}
 
-	void Update(float elapsedSec, IExamInterface * iFace) override;
+	eItemType m_ItemType;
+
+	void Update(float elapsedSec, IExamInterface* iFace) override;
 
 };
 
-class IsLoadedWithMedKits : public BaseWorldState 
+
+class IsLoadedWithMedKits : public BaseWorldState    /////Same as above
 {
 public:
 	explicit IsLoadedWithMedKits(bool predicate)
@@ -41,7 +48,8 @@ private:
 	int m_AcceptableAmountOfMedKits{ 2 };
 };
 
-class HasSavedWeaponsWithAcceptableAmmo : public BaseWorldState {
+class HasSavedWeaponsWithAcceptableAmmo : public BaseWorldState //same as above 
+{
 public:
 	explicit HasSavedWeaponsWithAcceptableAmmo(bool predicate)
 		: BaseWorldState(predicate)
@@ -210,7 +218,8 @@ public:
 };
 
 
-class NextToWeapon : public BaseWorldState {
+class NextToWeapon : public BaseWorldState 
+{
 public:
 	explicit NextToWeapon(bool predicate)
 		: BaseWorldState(predicate)
@@ -221,7 +230,8 @@ public:
 	void Update(float elapsedSec, IExamInterface* iFace) override;
 };
 
-class NextToFood : public BaseWorldState {
+class NextToFood : public BaseWorldState 
+{
 public:
 	explicit NextToFood(bool predicate)
 		: BaseWorldState(predicate)
