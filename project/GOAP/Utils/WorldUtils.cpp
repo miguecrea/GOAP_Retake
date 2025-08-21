@@ -13,7 +13,7 @@ bool WorldUtils::InventoryContains(IExamInterface* iFace, eItemType type, int mi
     return false;
 }
 
-int WorldUtils::CountItems(IExamInterface* iFace, eItemType type)
+int WorldUtils::CountItems(IExamInterface * iFace, eItemType type)
 {
     int count = 0;
     ItemInfo item{};

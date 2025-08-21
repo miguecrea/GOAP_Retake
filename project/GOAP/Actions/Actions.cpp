@@ -9,7 +9,7 @@
 ConsumeSavedFood::ConsumeSavedFood()
 {
 	SetName(typeid(this).name());
-	AddPrecondition(std::make_unique<HasSavedUpFood>(true));
+	AddPrecondition(std::make_unique<HasSavedUpItem>(true,eItemType::FOOD));
 	AddEffect(std::make_unique<IsHungry>(false));
 }
 
