@@ -1,11 +1,14 @@
 #pragma once
 #include "IExamPlugin.h"
 #include "Exam_HelperStructs.h"
+#include"memory.h"
+#include"GOAP/Planner/Planner.h"
 
 class IBaseInterface;
 class IExamInterface;
-class Brain;
-class WorldState;
+
+class BaseWorldState;
+class Planner;
 
 class SurvivalAgentPlugin :public IExamPlugin
 {
@@ -35,6 +38,10 @@ private:
 	float m_AngSpeed = 0.f; //Demo purpose
 
 	UINT m_InventorySlot = 0;
+
+	std::unique_ptr<Planner> m_Planner;
+
+	std::vector<std::unique_ptr<BaseWorldState>> m_WorldStates;
 
 
 };

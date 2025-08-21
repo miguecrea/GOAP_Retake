@@ -19,7 +19,7 @@ class IExamInterface;
 class Planner
 {
 public:
-	Planner(std::vector<BaseWorldState*> * pWorldStates);
+	Planner(const std::vector<std::unique_ptr<BaseWorldState>> & WorldStates);
 	~Planner();
 	Planner(const Planner&) = delete;
 	Planner(Planner&&) noexcept = delete;
@@ -32,9 +32,11 @@ public:
 private:
 
 	void MakeGraph(BaseWorldState* stateToAchieve);
-	std::vector<std::unique_ptr<BaseAction>> m_Actions;
 
-	std::vector<BaseWorldState*> * m_pWorldStates;
+	std::vector<std::unique_ptr<BaseWorldState>> m_pWorldStates;
+
+
+	std::vector<std::unique_ptr<BaseAction>> m_Actions;
 	std::vector<std::unique_ptr<BaseWorldState>> m_Goals;
 
 	std::unique_ptr<Graph> m_pGraph{};

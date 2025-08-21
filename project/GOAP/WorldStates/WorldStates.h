@@ -1,7 +1,7 @@
 #pragma once
 
 #include"BaseWorldState.h"
-
+#include"Exam_HelperStructs.h"
 
 class HasSavedUpItem : public BaseWorldState
 {
@@ -206,7 +206,7 @@ public:
 class NextToItem : public BaseWorldState
 {
 public:
-	explicit NextToItem(bool predicate, const eItemType& ItemType)
+	explicit NextToItem(bool predicate, const eItemType & ItemType)
 		: BaseWorldState(predicate), m_Item{ ItemType }
 	{
 		switch (m_Item)

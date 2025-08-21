@@ -1,9 +1,10 @@
-#include "WorldStates.h"
 #include "../../stdafx.h"
+#include "WorldStates.h"
 #include <IExamInterface.h>
 #include "../Memory/Memory.h"
 #include "../Utils/WorldUtils.h" 
 #include <algorithm>
+#include"Exam_HelperStructs.h"
 
 void IsLoadedWithMedKits::Update(float elapsedSec, IExamInterface * iFace)
 {
@@ -36,7 +37,6 @@ void IsHungry::Update(float elapsedSec, IExamInterface* iFace)
             foodInInventory = true;
             totalEnergyValueInInventory += item.Value;
             //add up all the energy value in inventory 
-
         }
     }
 
@@ -85,12 +85,15 @@ void IsInventoryFull::Update(float elapsedSec, IExamInterface* iFace)
 void IsLowOnAmmo::Update(float elapsedSec, IExamInterface* iFace)
 {
     // True if ANY weapon is below threshold
+
     m_Predicate =
-        WorldUtils::InventoryContains(iFace, eItemType::PISTOL, 0) &&
-        WorldUtils::CountItemsWithValue(iFace, eItemType::PISTOL, m_AmmoThreshold) == 0
+        WorldUtils::InventoryContains(iFace, eItemType::PISTOL, 0) &&  WorldUtils::CountItemsWithValue(iFace, eItemType::PISTOL, m_AmmoThreshold) == 0
         ||
         WorldUtils::InventoryContains(iFace, eItemType::SHOTGUN, 0) &&
         WorldUtils::CountItemsWithValue(iFace, eItemType::SHOTGUN, m_AmmoThreshold) == 0;
+
+
+
 }
 
 void IsNearEnemy::Update(float elapsedSec, IExamInterface* iFace)

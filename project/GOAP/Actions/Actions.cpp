@@ -4,7 +4,6 @@
 #include<vector>
 #include <IExamInterface.h>
 #include"../Memory/Memory.h"
-#include"../Memory/Memory.h"
 
 
 
@@ -16,11 +15,6 @@ ConsumeSavedFood::ConsumeSavedFood()
 	AddPrecondition(std::make_unique<HasSavedUpItem>(true,eItemType::FOOD));
 	AddEffect(std::make_unique<IsHungry>(false));
 }
-
-
-
-
-
 
 
 bool ConsumeSavedFood::Execute(float elapsedSec, SteeringPlugin_Output& steeringOutput, IExamInterface* iFace)
@@ -63,6 +57,7 @@ EvadeEnemy::EvadeEnemy()
 
 	AddPrecondition(std::make_unique<IsNearEnemy>(true));
 	AddPrecondition(std::make_unique<IsLowOnAmmo>(true));
+
 
 	AddEffect(std::make_unique<SafeFromEnemy>(true));
 
