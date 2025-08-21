@@ -4,6 +4,10 @@
 #include<vector>
 #include <IExamInterface.h>
 #include"../Memory/Memory.h"
+#include"../Memory/Memory.h"
+
+
+
 
 
 ConsumeSavedFood::ConsumeSavedFood()
@@ -12,6 +16,12 @@ ConsumeSavedFood::ConsumeSavedFood()
 	AddPrecondition(std::make_unique<HasSavedUpItem>(true,eItemType::FOOD));
 	AddEffect(std::make_unique<IsHungry>(false));
 }
+
+
+
+
+
+
 
 bool ConsumeSavedFood::Execute(float elapsedSec, SteeringPlugin_Output& steeringOutput, IExamInterface* iFace)
 {
@@ -125,21 +135,21 @@ GoToNearestSeenItem::GoToNearestSeenItem(const eItemType & Item):
 	m_DesiredItem{Item}
 {
 
+	AddPrecondition(std::make_unique<KnowsItemLocation>(true,m_DesiredItem));
+	AddEffect(std::make_unique<NextToItem>(true, m_DesiredItem));
+
+
 	switch (m_DesiredItem)
 	{
 	case eItemType::PISTOL:
 	case eItemType::SHOTGUN:
-		AddPrecondition(std::make_unique<KnowsWeaponLocation>(true));
-		AddEffect(std::make_unique<NextToWeapon>(true));
 		break;
 	case eItemType::MEDKIT:
-		AddPrecondition(std::make_unique<KnowsMedKitLocation>(true));
-		AddEffect(std::make_unique<NextToMedKit>(true));
+
 		break;
 	case eItemType::FOOD:
 
-		AddPrecondition(std::make_unique<KnowsFoodLocation>(true));
-		AddEffect(std::make_unique<NextToFood>(true));
+		
 		break;
 	default:
 		break;
@@ -198,3 +208,49 @@ bool GoToNearestSeenItem::Execute(float elapsedSec, SteeringPlugin_Output& steer
 
 	return true;
 }
+
+Wander::Wander()
+{
+
+	SetName(typeid(this).name());
+
+	m_WanderAngle = Elite::randomFloat(-E_PI, E_PI);
+}
+
+bool Wander::Execute(float elapsedSec, SteeringPlugin_Output& steeringOutput, IExamInterface* iFace)
+{
+	steeringOutput.AutoOrient = true;
+	auto agent = iFace->Agent_GetInfo();
+
+	// --- 1. Compute Wander Target ---
+	float circleDistance = m_CircleDistance; // how far ahead of agent
+	float circleRadius = m_CircleRadius;     // how wide the wander arc
+
+	Elite::Vector2 forward = agent.LinearVelocity.GetNormalized();
+	if (forward.Magnitude() < 0.01f) // fallback if standing still
+		forward = Elite::Vector2(1, 0);
+
+	Elite::Vector2 circleCenter = agent.Position + forward * circleDistance;
+
+	// Random displacement on circle
+	m_WanderAngle += Elite::randomFloat(-m_AngleChange, m_AngleChange);
+	Elite::Vector2 offset{ cos(m_WanderAngle) * circleRadius, sin(m_WanderAngle) * circleRadius };
+
+	Elite::Vector2 wanderTarget = circleCenter + offset;
+
+	
+
+	Elite::Vector2 desiredVelocity = (wanderTarget - agent.Position).GetNormalized() * agent.MaxLinearSpeed;
+	steeringOutput.LinearVelocity = desiredVelocity;
+
+	Elite::Vector2 toTarget = (wanderTarget - agent.Position).GetNormalized();
+	float angle = atan2f(toTarget.y, toTarget.x);
+	steeringOutput.AngularVelocity = Elite::ToDegrees(angle - agent.Orientation);
+
+	// Debug draw
+	iFace->Draw_Circle(circleCenter, circleRadius, Elite::Vector3(0, 1, 0));
+	iFace->Draw_Circle(wanderTarget, 2, Elite::Vector3(1, 0, 0));
+
+	return true;
+}
+

@@ -23,7 +23,7 @@ Planner::Planner(std::vector<BaseWorldState*>* pWorldStates)
 		std::make_unique<HasWeaponState>(true),
 		std::make_unique<IsHungry>(false),
 		std::make_unique<HasSavedUpItem>(true,eItemType::FOOD),
-		std::make_unique<HasSavedUpItem>(true,eItemType::MEDKIT),
+		std::make_unique<IsLoadedWithMedKits>(true),
 		std::make_unique<HasVisitedAllSeenHouses>(true),
 		std::make_unique<HasSavedWeaponsWithAcceptableAmmo>(true),
 	};

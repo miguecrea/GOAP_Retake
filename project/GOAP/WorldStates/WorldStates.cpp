@@ -2,7 +2,7 @@
 #include "../../stdafx.h"
 #include <IExamInterface.h>
 #include "../Memory/Memory.h"
-#include "../Utils/WorldUtils.h" // new helper class
+#include "../Utils/WorldUtils.h" 
 #include <algorithm>
 
 void IsLoadedWithMedKits::Update(float elapsedSec, IExamInterface * iFace)
@@ -12,24 +12,22 @@ void IsLoadedWithMedKits::Update(float elapsedSec, IExamInterface * iFace)
 
 void HasSavedWeaponsWithAcceptableAmmo::Update(float elapsedSec, IExamInterface* iFace)
 {
-    int count = WorldUtils::CountItemsWithValue(iFace, eItemType::PISTOL, m_AcceptableAmmo)
-        + WorldUtils::CountItemsWithValue(iFace, eItemType::SHOTGUN, m_AcceptableAmmo);
+    int count = WorldUtils::CountItemsWithValue(iFace, eItemType::PISTOL, m_AcceptableAmmo) + WorldUtils::CountItemsWithValue(iFace, eItemType::SHOTGUN, m_AcceptableAmmo);
 
     m_Predicate = count >= m_NumberOfAcceptableWeapons;
 }
 
 void HasWeaponState::Update(float elapsedSec, IExamInterface* iFace)
 {
-    m_Predicate = WorldUtils::InventoryContains(iFace, eItemType::PISTOL)
-        || WorldUtils::InventoryContains(iFace, eItemType::SHOTGUN);
+    m_Predicate = WorldUtils::InventoryContains(iFace, eItemType::PISTOL) || WorldUtils::InventoryContains(iFace, eItemType::SHOTGUN);
 }
 
 void IsHungry::Update(float elapsedSec, IExamInterface* iFace)
 {
-    // Check how much food we have saved up
     float totalEnergyValueInInventory = 0.f;
     ItemInfo item{};
     bool foodInInventory = false;
+
 
     for (UINT i = 0; i < iFace->Inventory_GetCapacity(); i++)
     {
@@ -37,14 +35,13 @@ void IsHungry::Update(float elapsedSec, IExamInterface* iFace)
         {
             foodInInventory = true;
             totalEnergyValueInInventory += item.Value;
+            //add up all the energy value in inventory 
+
         }
     }
 
     // Decide dynamic hunger threshold
-    float actualHungerThreshold =
-        !foodInInventory ? m_HungerThresholdIfNoFoodInInventory :
-        totalEnergyValueInInventory >= m_MaxEnergyCapacity ? m_LowestHungerThreshold :
-        m_MaxEnergyCapacity - totalEnergyValueInInventory;
+    float actualHungerThreshold =  !foodInInventory ? m_HungerThresholdIfNoFoodInInventory : totalEnergyValueInInventory >= m_MaxEnergyCapacity ? m_LowestHungerThreshold : m_MaxEnergyCapacity - totalEnergyValueInInventory;
 
     m_Predicate = WorldUtils::IsHungry(iFace, actualHungerThreshold);
 }
@@ -154,14 +151,13 @@ void KnowsItemLocation::Update(float elapsedSec, IExamInterface* iFace)
         [&](const ItemInfo& info) { return info.Type == m_Item; });
 }
 
-void NextToItem::Update(float elapsedSec, IExamInterface* iFace)
+void NextToItem::Update(float elapsedSec, IExamInterface * iFace)
 {
     auto items = iFace->GetItemsInFOV();
     Elite::Vector2 agentPos = iFace->Agent_GetInfo().Position;
     float grabRange = iFace->Agent_GetInfo().GrabRange;
 
-    m_Predicate = std::any_of(items.begin(), items.end(),
-        [&](const ItemInfo & info)
+    m_Predicate = std::any_of(items.begin(), items.end(),[&](const ItemInfo & info)
         {
             return info.Type == m_Item &&
                 (info.Location - agentPos).Magnitude() < grabRange;
