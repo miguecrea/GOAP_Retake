@@ -40,8 +40,7 @@ void HasSavedWeaponsWithAcceptableAmmo::Update(float elapsedSec, IExamInterface*
 	for (size_t i = 0; i < iFace->Inventory_GetCapacity(); i++)
 	{
 		if (iFace->Inventory_GetItem(i, item) &&
-			(item.Type == eItemType::PISTOL ||
-				item.Type == eItemType::SHOTGUN) && item.Value >= m_AcceptableAmmo)
+			(item.Type == eItemType::PISTOL || item.Type == eItemType::SHOTGUN) && item.Value >= m_AcceptableAmmo)
 		{
 			++numOfAcceptableWeapons;
 
@@ -108,47 +107,6 @@ void IsInHouseState::Update(float elapsedSec, IExamInterface* iFace)
 	m_Predicate = iFace->Agent_GetInfo().IsInHouse;
 }
 
-
-void NextToMedKit::Update(float elapsedSec, IExamInterface * iFace)
-{
-
-	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
-
-	m_Predicate = false;
-	for (const auto& info : itemInfo)
-	{
-		if (info.Type == eItemType::MEDKIT)
-		{
-			if ((info.Location - iFace->Agent_GetInfo().Position).Magnitude() < iFace->Agent_GetInfo().GrabRange)
-			{
-				m_Predicate = true;
-				break;
-			}
-		}
-
-	}
-}
-
-void NextToWeapon::Update(float elapsedSec, IExamInterface* iFace)
-{
-
-	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
-
-	m_Predicate = false;
-	for (const auto& info : itemInfo)
-	{
-		if (info.Type == eItemType::SHOTGUN ||
-			info.Type == eItemType::PISTOL)
-		{
-			if ((info.Location - iFace->Agent_GetInfo().Position).Magnitude() < iFace->Agent_GetInfo().GrabRange)
-			{
-				m_Predicate = true;
-				break;
-			}
-		}
-
-	}
-}
 
 void ZombieInViewState::Update(float elapsedSec, IExamInterface* iFace)
 {
@@ -241,79 +199,6 @@ void SafeFromEnemy::Update(float elapsedSec, IExamInterface* iFace)
 		{
 			return (e.Location - agentPos).Magnitude() > attackRange;
 		});
-}
-void NextToFood::Update(float elapsedSec, IExamInterface* iFace)
-
-
-{
-	std::vector<ItemInfo> itemInfo = iFace->GetItemsInFOV();
-
-	m_Predicate = false;
-	for (const auto& info : itemInfo)
-	{
-		if (info.Type == eItemType::FOOD)
-		{
-			if ((info.Location - iFace->Agent_GetInfo().Position).Magnitude() < iFace->Agent_GetInfo().GrabRange)
-			{
-				m_Predicate = true;
-				break;
-			}
-		}
-
-	}
-}
-
-void KnowsFoodLocation::Update(float elapsedSec, IExamInterface* iFace)
-{
-
-	m_Predicate = false;
-
-	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
-
-	for (size_t i = 0; i < itemInfo.size(); i++)
-	{
-		if (itemInfo[i].Type == eItemType::FOOD)
-		{
-			m_Predicate = true;
-			return;
-		}
-	}
-}
-
-void KnowsMedKitLocation::Update(float elapsedSec, IExamInterface* iFace)
-{
-	m_Predicate = false;
-
-	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
-
-
-	for (size_t i = 0; i < itemInfo.size(); i++)
-	{
-		if (itemInfo[i].Type == eItemType::MEDKIT)
-		{
-			m_Predicate = true;
-			return;
-		}
-	}
-}
-
-
-void KnowsWeaponLocation::Update(float elapsedSec, IExamInterface* iFace)
-{
-
-	m_Predicate = false;
-
-	std::vector<ItemInfo> itemInfo = WorldMemory::Instance()->ItemsList();
-
-
-	for (size_t i = 0; i < itemInfo.size(); i++)
-	{
-		if (itemInfo[i].Type == eItemType::PISTOL || itemInfo[i].Type == eItemType::SHOTGUN )
-		{
-			m_Predicate = true;
-			return;
-		}
-	}
 }
 
 void IsInPurgeZoneState::Update(float elapsedSec, IExamInterface* iFace)

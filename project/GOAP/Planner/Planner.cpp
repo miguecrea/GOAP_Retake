@@ -6,11 +6,26 @@ Planner::Planner(std::vector<BaseWorldState*>* pWorldStates)
 {
 
 
-	m_Actions =
+	//m_Actions =
+	//{
+	//	std::make_unique<
+
+
+	//};
+
+
+
+	m_Goals =
 	{
-		std::make_unique<
-
-
+		std::make_unique<IsInPurgeZoneState>(false),
+		std::make_unique<RecentlyBittenState>(false),
+		std::make_unique<ZombieInViewState>(false),
+		std::make_unique<HasWeaponState>(true),
+		std::make_unique<IsHungry>(false),
+		std::make_unique<HasSavedUpItem>(true,eItemType::FOOD),
+		std::make_unique<HasSavedUpItem>(true,eItemType::MEDKIT),
+		std::make_unique<HasVisitedAllSeenHouses>(true),
+		std::make_unique<HasSavedWeaponsWithAcceptableAmmo>(true),
 	};
 
 
