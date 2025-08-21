@@ -35,7 +35,7 @@ private:
 	std::vector<std::unique_ptr<BaseAction>> m_Actions;
 
 	std::vector<BaseWorldState*> * m_pWorldStates;
-	std::vector<BaseWorldState*> m_Goals;
+	std::vector<std::unique_ptr<BaseWorldState>> m_Goals;
 
 	std::unique_ptr<Graph> m_pGraph{};
 
